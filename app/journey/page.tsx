@@ -13,13 +13,16 @@ import { Volume2, VolumeX, Home, Heart } from "lucide-react"
 import Link from "next/link"
 
 export default function Journey() {
+  // تعديل الحالة (state) لإضافة وضع المعاينة
   const [currentSection, setCurrentSection] = useState("")
+  const [previewSection, setPreviewSection] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
   const [audioPlaying, setAudioPlaying] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [showHeartTrail, setShowHeartTrail] = useState(false)
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number; size: number; opacity: number }[]>([])
+  const [isPreviewMode, setIsPreviewMode] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const heartCount = useRef(0)
 
@@ -109,10 +112,44 @@ export default function Journey() {
     }
   }, [currentSection, showHeartTrail])
 
-  // Manual section selection
+  // تعديل وظيفة اختيار القسم لتعمل مع وضع المعاينة
   const selectSection = (section: string) => {
-    setCurrentSection(section)
-    setProgress(calculateProgress(section))
+    if (isPreviewMode) {
+      // في وضع المعاينة، نقوم فقط بتعيين قسم المعاينة دون تغيير القسم الحالي
+      setPreviewSection(section)
+    } else {
+      // في الوضع العادي، نقوم بتغيير القسم الحالي مباشرة
+      setCurrentSection(section)
+      setProgress(calculateProgress(section))
+    }
+  }
+
+  // وظيفة جديدة لتأكيد اختيار القسم بعد المعاينة
+  const confirmSectionSelection = () => {
+    if (previewSection) {
+      setCurrentSection(previewSection)
+      setProgress(calculateProgress(previewSection))
+      setPreviewSection(null)
+      setIsPreviewMode(false)
+    }
+  }
+
+  // وظيفة جديدة لإلغاء المعاينة والعودة إلى القسم الحالي
+  const cancelPreview = () => {
+    setPreviewSection(null)
+    setIsPreviewMode(false)
+  }
+
+  // وظيفة جديدة لتبديل وضع المعاينة
+  const togglePreviewMode = () => {
+    setIsPreviewMode(!isPreviewMode)
+    if (!isPreviewMode) {
+      // عند تفعيل وضع المعاينة، نعين قسم المعاينة ليكون هو القسم الحالي مبدئيًا
+      setPreviewSection(currentSection)
+    } else {
+      // عند إلغاء وضع المعاينة، نلغي المعاينة
+      setPreviewSection(null)
+    }
   }
 
   // Toggle background music
@@ -195,7 +232,19 @@ export default function Journey() {
         </div>
       </div>
 
+      {/* تعديل قسم التنقل بين الأقسام لدعم وضع المعاينة */}
       <div className="container mx-auto px-4 py-8">
+        {/* زر تبديل وضع المعاينة */}
+        <div className="flex justify-center mb-4">
+          <Button
+            onClick={togglePreviewMode}
+            variant="outline"
+            className={`rounded-full ${isPreviewMode ? "bg-amber-100 text-amber-700 border-amber-300" : "bg-white/70 text-teal-700 border-teal-200"}`}
+          >
+            {isPreviewMode ? "إلغاء وضع المعاينة" : "تفعيل وضع المعاينة"}
+          </Button>
+        </div>
+
         {/* Section navigation */}
         <div
           className="mb-8 flex flex-wrap justify-center gap-2 bg-white/60 backdrop-blur-sm p-3 rounded-full shadow-sm"
@@ -203,7 +252,11 @@ export default function Journey() {
         >
           <motion.button
             onClick={() => selectSection("morning")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "morning" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-teal-700 hover:bg-teal-50"}`}
+            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+              (isPreviewMode ? previewSection === "morning" : currentSection === "morning")
+                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
+                : "bg-white/70 text-teal-700 hover:bg-teal-50"
+            }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -211,7 +264,11 @@ export default function Journey() {
           </motion.button>
           <motion.button
             onClick={() => selectSection("noon")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "noon" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-teal-700 hover:bg-teal-50"}`}
+            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+              (isPreviewMode ? previewSection === "noon" : currentSection === "noon")
+                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
+                : "bg-white/70 text-teal-700 hover:bg-teal-50"
+            }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -219,7 +276,11 @@ export default function Journey() {
           </motion.button>
           <motion.button
             onClick={() => selectSection("afternoon")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "afternoon" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-teal-700 hover:bg-teal-50"}`}
+            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+              (isPreviewMode ? previewSection === "afternoon" : currentSection === "afternoon")
+                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
+                : "bg-white/70 text-teal-700 hover:bg-teal-50"
+            }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -227,7 +288,11 @@ export default function Journey() {
           </motion.button>
           <motion.button
             onClick={() => selectSection("evening")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "evening" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-teal-700 hover:bg-teal-50"}`}
+            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+              (isPreviewMode ? previewSection === "evening" : currentSection === "evening")
+                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
+                : "bg-white/70 text-teal-700 hover:bg-teal-50"
+            }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -235,7 +300,11 @@ export default function Journey() {
           </motion.button>
           <motion.button
             onClick={() => selectSection("night")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "night" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-teal-700 hover:bg-teal-50"}`}
+            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+              (isPreviewMode ? previewSection === "night" : currentSection === "night")
+                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
+                : "bg-white/70 text-teal-700 hover:bg-teal-50"
+            }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -243,19 +312,55 @@ export default function Journey() {
           </motion.button>
         </div>
 
+        {/* أزرار تأكيد أو إلغاء المعاينة */}
+        {isPreviewMode && (
+          <div className="flex justify-center gap-4 mb-6">
+            <Button
+              onClick={confirmSectionSelection}
+              className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white"
+            >
+              تأكيد الاختيار
+            </Button>
+            <Button onClick={cancelPreview} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50">
+              إلغاء المعاينة
+            </Button>
+          </div>
+        )}
+
+        {/* شريط معلومات المعاينة */}
+        {isPreviewMode && (
+          <div className="bg-amber-100 text-amber-800 p-3 rounded-lg mb-6 text-center text-sm">
+            أنت في وضع المعاينة. يمكنك استعراض الأقسام المختلفة دون تغيير القسم الحالي.
+            {previewSection !== currentSection && (
+              <div className="mt-2 font-medium">
+                تتم معاينة قسم:{" "}
+                {previewSection === "morning"
+                  ? "الصبح"
+                  : previewSection === "noon"
+                    ? "الضهر"
+                    : previewSection === "afternoon"
+                      ? "العصر"
+                      : previewSection === "evening"
+                        ? "المغرب"
+                        : "الليل"}
+              </div>
+            )}
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentSection}
+            key={isPreviewMode ? previewSection || currentSection : currentSection}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            {currentSection === "morning" && <Morning />}
-            {currentSection === "noon" && <Noon />}
-            {currentSection === "afternoon" && <Afternoon />}
-            {currentSection === "evening" && <Evening />}
-            {currentSection === "night" && <Night />}
+            {(isPreviewMode ? previewSection || currentSection : currentSection) === "morning" && <Morning />}
+            {(isPreviewMode ? previewSection || currentSection : currentSection) === "noon" && <Noon />}
+            {(isPreviewMode ? previewSection || currentSection : currentSection) === "afternoon" && <Afternoon />}
+            {(isPreviewMode ? previewSection || currentSection : currentSection) === "evening" && <Evening />}
+            {(isPreviewMode ? previewSection || currentSection : currentSection) === "night" && <Night />}
           </motion.div>
         </AnimatePresence>
       </div>
