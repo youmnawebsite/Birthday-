@@ -53,7 +53,7 @@ export default function Morning() {
 
     // Initialize audio elements with default audio
     if (typeof window !== "undefined") {
-      // Using built-in browser audio capabilities with fallback silent audio
+      // Using built-in browser audio capabilities with your custom song
       musicAudioRef.current = new Audio("/public/Mahmoud El Esseily -Kol Sana - Wadi Degla Ramadan 2025 محمود العسيلي - كل سنة - وادي دجلة رمضان ٢٠٢٥(MP3_320K).mp3")
       voiceAudioRef.current = new Audio("/public/Mahmoud El Esseily -Kol Sana - Wadi Degla Ramadan 2025 محمود العسيلي - كل سنة - وادي دجلة رمضان ٢٠٢٥(MP3_320K).mp3")
 

@@ -6,6 +6,7 @@ import Morning from "@/components/sections/morning"
 import Noon from "@/components/sections/noon"
 import Afternoon from "@/components/sections/afternoon"
 import Evening from "@/components/sections/evening"
+import Night from "@/components/sections/night"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Volume2, VolumeX, Home, Heart } from "lucide-react"
@@ -24,7 +25,7 @@ export default function Journey() {
 
   // Calculate progress based on current section
   const calculateProgress = (section: string) => {
-    const sections = ["morning", "noon", "afternoon", "evening"]
+    const sections = ["morning", "noon", "afternoon", "evening", "night"]
     const index = sections.indexOf(section)
     return ((index + 1) / sections.length) * 100
   }
@@ -56,8 +57,10 @@ export default function Journey() {
         return "noon"
       } else if (hour >= 15 && hour < 18) {
         return "afternoon"
-      } else {
+      } else if (hour >= 18 && hour < 22) {
         return "evening"
+      } else {
+        return "night"
       }
     }
 
@@ -230,6 +233,14 @@ export default function Journey() {
           >
             المغرب
           </motion.button>
+          <motion.button
+            onClick={() => selectSection("night")}
+            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "night" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-teal-700 hover:bg-teal-50"}`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            الليل
+          </motion.button>
         </div>
 
         <AnimatePresence mode="wait">
@@ -244,6 +255,7 @@ export default function Journey() {
             {currentSection === "noon" && <Noon />}
             {currentSection === "afternoon" && <Afternoon />}
             {currentSection === "evening" && <Evening />}
+            {currentSection === "night" && <Night />}
           </motion.div>
         </AnimatePresence>
       </div>
