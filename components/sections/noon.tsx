@@ -28,12 +28,12 @@ export default function Noon() {
     {
       question: "إيه أكتر حاجة بتعصبني؟",
       options: ["الزن", "اخويا", "الفوضى", "الأكل البارد"],
-      correctAnswer: "التأخير", // Replace with actual answer
+      correctAnswer: "اخويا", // Replace with actual answer
     },
     {
       question: "لو طلبت بيتزا، هطلب إيه؟",
       options: ["رانش", "بيبروني", "سوبريم", "باربكيو"],
-      correctAnswer: "سوبريم", // Replace with actual answer
+      correctAnswer: "رانش", // Replace with actual answer
     },
     {
       question: "إيه أكتر حاجه بحبها بتعمليها ",
@@ -43,12 +43,12 @@ export default function Noon() {
     {
       question: "ايه اكتر حاجه بحبها في شكلك",
       options: ["عيونك", "خدودك", "شفايفك", "ضحكتك"],
-      correctAnswer: "رموشك", // Replace with actual answer
+      correctAnswer: "ضحكتك", // Replace with actual answer
     },
     {
       question: "إيه هو لوني المفضل؟",
       options: ["الأزرق", "الأخضر", "الأسود", "البنفسجي"],
-      correctAnswer: "الأزرق", // Replace with actual answer
+      correctAnswer: "الأسود", // Replace with actual answer
     },
   ]
 
