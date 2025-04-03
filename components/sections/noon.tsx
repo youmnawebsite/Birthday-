@@ -83,7 +83,7 @@ export default function Noon() {
       { id: "activity", label: "نشاط نعملو يعني قولي فعل مثلا(يلعبوا) " },
       { id: "emotion", label: "شعور" },
       { id: "food", label: "أكلة" },
-      { id: "future", label: "حاجة نفسك تعملوها مع بعض فعل بردو" },
+      { id: "future", label: "(حاجة نفسك نعملها مع بعض (فعل بردو" },
     ],
     template:
       "كان فيه مرة شاب {adjective1} قابل بنت جميلة في {place}. قرروا يروحوا {activity} مع بعض وكانوا حاسين بـ{emotion}. بعدها راحوا ياكلوا {food} وقرروا إنهم {future} قريب. وعاشوا في سعادة وحب طول العمر.",
@@ -163,7 +163,7 @@ export default function Noon() {
     setFortuneResult(null)
 
     // Animation effect
-    const duration = 1500
+    const duration = 9000
     const interval = 100
     let count = 0
 
