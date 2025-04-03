@@ -56,9 +56,9 @@ export default function Journey() {
     const determineSection = () => {
       const hour = new Date().getHours()
 
-      if (hour >= 5 && hour < 10) {
+      if (hour >= 5 && hour < 13) {
         return "morning"
-      } else if (hour >= 10 && hour < 16) {
+      } else if (hour >= 13 && hour < 16) {
         return "noon"
       } else if (hour >= 16 && hour < 19) {
         return "afternoon"
