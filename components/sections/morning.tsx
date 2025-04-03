@@ -1,19 +1,14 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Gift, Music, Mic, Heart, Play, Pause } from "lucide-react"
-import AudioRecorder from "@/components/audio-recorder"
+import { Gift, Heart, Quote, Sun, Coffee } from "lucide-react"
 
 export default function Morning() {
   const [showGift, setShowGift] = useState(false)
-  const [activeTab, setActiveTab] = useState("music")
-  const [isPlayingMusic, setIsPlayingMusic] = useState(false)
-  const [isPlayingVoice, setIsPlayingVoice] = useState(false)
-  const musicAudioRef = useRef<HTMLAudioElement | null>(null)
-  const voiceAudioRef = useRef<HTMLAudioElement | null>(null)
+  const [activeQuote, setActiveQuote] = useState(0)
   const [mounted, setMounted] = useState(false)
 
   // Animation variants
@@ -36,89 +31,43 @@ export default function Morning() {
     },
   }
 
-  // Pre-populated content
-  const morningContent = {
-    music: {
-      title: "أغنية ليكي ",
-      description: "أغنية اخترتها عشان اليوم الحلو ده",
+  // صباح الخير رسائل
+  const morningMessages = [
+    "صباح الخير يا أجمل ما في الدنيا كل سنة وانتي طيبة ومعايا يروحقلبي ❤️",
+    "صباح النور على عيونك الحلوة، يومك قمر زي قلبك يا أحلى حاجة في حياتي",
+    "صباح الفل على أجمل وردة عيد ميلاد سعيد يا حبيبتي",
+    "صباح الهنا النهاردة يوم مميز لأنه يوم ميلاد أغلى إنسانة في حياتي",
+    "صباح الحب كل سنة وانتي معايا وقلبي معاكي دايمًا",
+  ]
+
+  // كلمات صباحية جميلة
+  const morningQuotes = [
+    {
+      text: "أنتِ شمس صباحي وقمر ليلي كل سنة وانتي طيبة يحبيبتي",
+      author: "من قلبي",
     },
-    voice: {
-      title: "رسالة عالصبح",
-      description: "الرساله مني يعني",
+    {
+      text: "كل صباح بيكون أحلى لما بفتكر إنك في حياتي، عيد ميلاد سعيد",
+      author: "من قلبي",
     },
-  }
+    {
+      text: "صباحك سكر زيك يومك فل زي قلبك، عيد ميلاد تحفه يا أحلى حاجة في الدنيا",
+      author: "من قلبي",
+    },
+  ]
 
   useEffect(() => {
     setMounted(true)
 
-    // Initialize audio elements with default audio
-    if (typeof window !== "undefined") {
-      // Using built-in browser audio capabilities with your custom song
-      musicAudioRef.current = new Audio("/public/song.mp3")
-      voiceAudioRef.current = new Audio("/public/song.mp3")
+    // تغيير الرسالة كل 5 ثواني
+    if (showGift) {
+      const interval = setInterval(() => {
+        setActiveQuote((prev) => (prev + 1) % morningQuotes.length)
+      }, 5000)
 
-      // Add event listeners
-      const musicAudio = musicAudioRef.current
-      const voiceAudio = voiceAudioRef.current
-
-      if (musicAudio) {
-        musicAudio.addEventListener("ended", () => setIsPlayingMusic(false))
-      }
-
-      if (voiceAudio) {
-        voiceAudio.addEventListener("ended", () => setIsPlayingVoice(false))
-      }
-
-      // Cleanup
-      return () => {
-        if (musicAudio) {
-          musicAudio.pause()
-          musicAudio.removeEventListener("ended", () => setIsPlayingMusic(false))
-        }
-
-        if (voiceAudio) {
-          voiceAudio.pause()
-          voiceAudio.removeEventListener("ended", () => setIsPlayingVoice(false))
-        }
-      }
+      return () => clearInterval(interval)
     }
-  }, [])
-
-  const toggleMusic = () => {
-    if (!musicAudioRef.current) return
-
-    if (isPlayingMusic) {
-      musicAudioRef.current.pause()
-    } else {
-      // Pause voice message if playing
-      if (isPlayingVoice && voiceAudioRef.current) {
-        voiceAudioRef.current.pause()
-        setIsPlayingVoice(false)
-      }
-
-      musicAudioRef.current.play().catch((err) => console.error("Error playing music:", err))
-    }
-
-    setIsPlayingMusic(!isPlayingMusic)
-  }
-
-  const toggleVoice = () => {
-    if (!voiceAudioRef.current) return
-
-    if (isPlayingVoice) {
-      voiceAudioRef.current.pause()
-    } else {
-      // Pause music if playing
-      if (isPlayingMusic && musicAudioRef.current) {
-        musicAudioRef.current.pause()
-        setIsPlayingMusic(false)
-      }
-
-      voiceAudioRef.current.play().catch((err) => console.error("Error playing voice message:", err))
-    }
-
-    setIsPlayingVoice(!isPlayingVoice)
-  }
+  }, [showGift, morningQuotes.length])
 
   if (!mounted) return null
 
@@ -144,7 +93,7 @@ export default function Morning() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-2">
             أجمل بداية
           </h1>
-          <p className="text-sm text-gray-500">بداية يوم مميز لشخص مميز</p>
+          <p className="text-sm text-gray-500">بداية يوم مميز لقمر مميزه</p>
         </motion.div>
 
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="max-w-2xl mx-auto">
@@ -155,7 +104,7 @@ export default function Morning() {
                   <Heart className="h-4 w-4 text-white" />
                 </div>
                 <p className="text-xl text-gray-700 leading-relaxed pt-2">
-                  بما إن النهارده عيد ميلادك، فأنا قررت أكون صوت صباحك القمر: صباح الخير يا أحلى حاجة حصلت في الدنيا!
+                  {morningMessages[Math.floor(Math.random() * morningMessages.length)]}
                 </p>
               </div>
 
@@ -166,7 +115,7 @@ export default function Morning() {
                     className="bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white px-6 py-3 rounded-full text-lg transition-all duration-300 shadow-md hover:shadow-lg w-full"
                   >
                     <Gift className="ml-2 h-5 w-5" />
-                    افتح أول هدية
+                    افتحي أول هدية
                   </Button>
                 </motion.div>
               ) : (
@@ -178,78 +127,59 @@ export default function Morning() {
                   className="w-full"
                 >
                   <Card className="p-6 bg-white border border-teal-100 shadow-md">
-                    <div className="flex justify-center mb-4 border-b pb-3">
-                      <div className="flex space-x-2 space-x-reverse bg-gray-100 p-1 rounded-full">
-                        <Button
-                          variant={activeTab === "music" ? "default" : "ghost"}
-                          size="sm"
-                          className={`rounded-full ${activeTab === "music" ? "bg-gradient-to-r from-teal-500 to-blue-500" : ""}`}
-                          onClick={() => setActiveTab("music")}
-                        >
-                          <Music className="h-4 w-4 ml-1" />
-                          موسيقى
-                        </Button>
-                        <Button
-                          variant={activeTab === "voice" ? "default" : "ghost"}
-                          size="sm"
-                          className={`rounded-full ${activeTab === "voice" ? "bg-gradient-to-r from-teal-500 to-blue-500" : ""}`}
-                          onClick={() => setActiveTab("voice")}
-                        >
-                          <Mic className="h-4 w-4 ml-1" />
-                          رسالة صوتية
-                        </Button>
+                    <div className="flex justify-center mb-6">
+                      <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-3 rounded-full shadow-md">
+                        <Sun className="h-6 w-6 text-white" />
                       </div>
                     </div>
 
-                    <AnimatePresence mode="wait">
-                      {activeTab === "music" && (
-                        <motion.div
-                          key="music"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.3 }}
-                          className="space-y-4"
-                        >
-                          <div className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-lg p-4 text-center">
-                            <p className="text-gray-700 mb-2 font-medium">{morningContent.music.title}</p>
-                            <div className="h-24 flex items-center justify-center border border-dashed border-teal-200 rounded bg-white/80">
-                              <div className="flex flex-col items-center justify-center w-full">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-12 w-12 rounded-full bg-teal-100 hover:bg-teal-200 mb-2"
-                                  onClick={toggleMusic}
-                                >
-                                  {isPlayingMusic ? (
-                                    <Pause className="h-6 w-6 text-teal-700" />
-                                  ) : (
-                                    <Play className="h-6 w-6 text-teal-700" />
-                                  )}
-                                </Button>
-                                <p className="text-sm text-teal-700">
-                                  {isPlayingMusic ? "إيقاف الأغنية" : "تشغيل الأغنية"}
-                                </p>
-                              </div>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-2">{morningContent.music.description}</p>
-                          </div>
-                        </motion.div>
-                      )}
+                    <h3 className="text-xl font-semibold text-center text-teal-700 mb-4">صباح الحب والحاجات الحلوه</h3>
 
-                      {activeTab === "voice" && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                      <div className="bg-gradient-to-r from-teal-50 to-blue-50 p-4 rounded-lg shadow-inner">
+                        <div className="flex items-center mb-3">
+                          <Coffee className="h-5 w-5 text-teal-600 mr-2" />
+                          <h4 className="font-medium text-teal-700">رغي الصبح </h4>
+                        </div>
+                        <p className="text-gray-700">
+                          لو كنا سوا دلوقتي يبت يا يمنى و ف بيتنا كان زماني بعملك بروبوزيل من تاني وبتقدملك تاني واحبك تاني الفرق بقى بعد ما اطلعلك الخاتم وتوافقي هنحضن بعض حضن كبير اوي عادي ويارب ارزقنا ويخليكي ليا يا يومنتي 
+                        </p>
+                      </div>
+
+                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg shadow-inner">
+                        <div className="flex items-center mb-3">
+                          <Gift className="h-5 w-5 text-blue-600 mr-2" />
+                          <h4 className="font-medium text-blue-700">هدية الصبح كده</h4>
+                        </div>
+                        <p className="text-gray-700">
+                          كل ثانيه معاكي هدية وكل يوم بيعدي وانتي في حياتي نعمة عيد ميلاد قمر شبهك يا أجمل هدية في حياتي
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="relative bg-gradient-to-r from-amber-50 to-yellow-50 p-5 rounded-lg shadow-inner mb-4">
+                      <div className="absolute -top-3 -right-3">
+                        <div className="bg-gradient-to-r from-amber-500 to-yellow-500 p-2 rounded-full shadow-md">
+                          <Quote className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+
+                      <AnimatePresence mode="wait">
                         <motion.div
-                          key="voice"
+                          key={activeQuote}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.3 }}
-                          className="space-y-4"
+                          transition={{ duration: 0.5 }}
+                          className="pt-2"
                         >
-                          <AudioRecorder />
+                          <p className="text-lg text-gray-700 mb-2">"{morningQuotes[activeQuote].text}"</p>
+                          <p className="text-right text-amber-700 text-sm">{morningQuotes[activeQuote].author}</p>
                         </motion.div>
-                      )}
-                    </AnimatePresence>
+                      </AnimatePresence>
+                    </div>
+
+                    <div className="text-center text-gray-500 text-sm">المسدجات بتتغير تلقائيًا كل 5 ثواني</div>
                   </Card>
                 </motion.div>
               )}
