@@ -310,7 +310,7 @@ export default function Noon() {
                       <div className="w-20 h-20 mx-auto bg-gradient-to-r from-teal-400 to-green-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
                         <CheckCircle2 className="h-10 w-10 text-white" />
                       </div>
-                      <p className="text-2xl font-bold text-teal-600 mb-4">إنتي أسطورة، عارفة كل حاجة عني! ❤️</p>
+                      <p className="text-2xl font-bold text-teal-600 mb-4">إنتي شطورههه عارفة كل حاجة عني ❤️</p>
                       <div className="p-6 bg-gradient-to-r from-teal-50 to-green-50 rounded-lg shadow-inner">
                         <p className="text-lg">جاوبتي على كل الاسئله يروحقلبي انتي تعرفيني اويييي🥹❤</p>
                       </div>
