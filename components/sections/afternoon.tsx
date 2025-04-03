@@ -91,7 +91,7 @@ export default function Afternoon() {
                           <Quote className="h-6 w-6 text-white" />
                         </div>
                         <h3 className="text-xl font-semibold mb-2">كلام حلو</h3>
-                        <p className="text-gray-600">أبيات شعر وكلام من القلب</p>
+                        <p className="text-gray-600">شوية ابيات شعر بقى من الأخر</p>
                       </div>
                     </Card>
                   </motion.div>
@@ -124,8 +124,8 @@ export default function Afternoon() {
                         <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-3 rounded-full shadow-md mb-4">
                           <Gamepad className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">لعبة صغيرة</h3>
-                        <p className="text-gray-600">يلا نلعب شوية</p>
+                        <h3 className="text-xl font-semibold mb-2">لعبة ثغنتوتته</h3>
+                        <p className="text-gray-600"> يلا نلعب شوية يبنوتي</p>
                       </div>
                     </Card>
                   </motion.div>
