@@ -4,9 +4,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 import FallingHearts from "@/components/falling-hearts"
 
 export const metadata = {
-  title: "يومك في قلبي.. لحظة بلحظة",
-  description: "موقع خاص لعيد ميلاد زوجتي الغالية",
-    generator: 'v0.dev'
+  title: "يومك في قلبي يحبيبت قلبي ",
+  description: "ويبسايت نعيش يومك سوا عليه😍❤",
+    generator: 'Mazontk'
 }
 
 export default function RootLayout({
