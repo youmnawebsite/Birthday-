@@ -25,6 +25,8 @@ export default function Journey() {
   const [isPreviewMode, setIsPreviewMode] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const heartCount = useRef(0)
+  const secretClickCount = useRef(0)
+  const secretClickTimer = useRef<NodeJS.Timeout | null>(null)
 
   // Calculate progress based on current section
   const calculateProgress = (section: string) => {
@@ -101,13 +103,27 @@ export default function Journey() {
       }
     }
 
+    // إضافة مستمع لضغطات المفاتيح للوصول السري لوضع المعاينة
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // تفعيل وضع المعاينة عند الضغط على Ctrl+Shift+P
+      if (e.ctrlKey && e.shiftKey && e.key === "P") {
+        e.preventDefault()
+        togglePreviewMode()
+      }
+    }
+
     window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("keydown", handleKeyDown)
 
     return () => {
       clearInterval(interval)
       window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("keydown", handleKeyDown)
       if (audioRef.current) {
         audioRef.current.pause()
+      }
+      if (secretClickTimer.current) {
+        clearTimeout(secretClickTimer.current)
       }
     }
   }, [currentSection, showHeartTrail])
@@ -149,6 +165,26 @@ export default function Journey() {
     } else {
       // عند إلغاء وضع المعاينة، نلغي المعاينة
       setPreviewSection(null)
+    }
+  }
+
+  // وظيفة للنقرات السرية لتفعيل وضع المعاينة
+  const handleSecretClick = () => {
+    secretClickCount.current += 1
+
+    // إعادة ضبط العداد بعد 2 ثانية من عدم النقر
+    if (secretClickTimer.current) {
+      clearTimeout(secretClickTimer.current)
+    }
+
+    secretClickTimer.current = setTimeout(() => {
+      secretClickCount.current = 0
+    }, 2000)
+
+    // تفعيل وضع المعاينة بعد 5 نقرات متتالية
+    if (secretClickCount.current >= 5) {
+      secretClickCount.current = 0
+      togglePreviewMode()
     }
   }
 
@@ -215,7 +251,10 @@ export default function Journey() {
               </Button>
             </Link>
 
-            <div className="text-sm font-medium text-teal-700">رحلة عيد الميلاد</div>
+            {/* منطقة النقر السري - تبدو كعنوان عادي */}
+            <div className="text-sm font-medium text-teal-700 cursor-default select-none" onClick={handleSecretClick}>
+              رحلة عيد الميلاد
+            </div>
 
             <div className="flex space-x-2">
               <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleHeartTrail}>
@@ -232,18 +271,27 @@ export default function Journey() {
         </div>
       </div>
 
-      {/* تعديل قسم التنقل بين الأقسام لدعم وضع المعاينة */}
       <div className="container mx-auto px-4 py-8">
-        {/* زر تبديل وضع المعاينة */}
-        <div className="flex justify-center mb-4">
-          <Button
-            onClick={togglePreviewMode}
-            variant="outline"
-            className={`rounded-full ${isPreviewMode ? "bg-amber-100 text-amber-700 border-amber-300" : "bg-white/70 text-teal-700 border-teal-200"}`}
-          >
-            {isPreviewMode ? "إلغاء وضع المعاينة" : "تفعيل وضع المعاينة"}
-          </Button>
-        </div>
+        {/* أزرار تأكيد أو إلغاء المعاينة - تظهر فقط في وضع المعاينة */}
+        {isPreviewMode && (
+          <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+            <Button
+              onClick={confirmSectionSelection}
+              size="sm"
+              className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white"
+            >
+              تأكيد
+            </Button>
+            <Button
+              onClick={cancelPreview}
+              size="sm"
+              variant="outline"
+              className="border-red-200 text-red-600 hover:bg-red-50"
+            >
+              إلغاء
+            </Button>
+          </div>
+        )}
 
         {/* Section navigation */}
         <div
@@ -312,41 +360,8 @@ export default function Journey() {
           </motion.button>
         </div>
 
-        {/* أزرار تأكيد أو إلغاء المعاينة */}
-        {isPreviewMode && (
-          <div className="flex justify-center gap-4 mb-6">
-            <Button
-              onClick={confirmSectionSelection}
-              className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white"
-            >
-              تأكيد الاختيار
-            </Button>
-            <Button onClick={cancelPreview} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50">
-              إلغاء المعاينة
-            </Button>
-          </div>
-        )}
-
-        {/* شريط معلومات المعاينة */}
-        {isPreviewMode && (
-          <div className="bg-amber-100 text-amber-800 p-3 rounded-lg mb-6 text-center text-sm">
-            أنت في وضع المعاينة. يمكنك استعراض الأقسام المختلفة دون تغيير القسم الحالي.
-            {previewSection !== currentSection && (
-              <div className="mt-2 font-medium">
-                تتم معاينة قسم:{" "}
-                {previewSection === "morning"
-                  ? "الصبح"
-                  : previewSection === "noon"
-                    ? "الضهر"
-                    : previewSection === "afternoon"
-                      ? "العصر"
-                      : previewSection === "evening"
-                        ? "المغرب"
-                        : "الليل"}
-              </div>
-            )}
-          </div>
-        )}
+        {/* إشارة صغيرة جدًا لوضع المعاينة - تظهر فقط في وضع المعاينة */}
+        {isPreviewMode && <div className="fixed top-4 left-4 w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>}
 
         <AnimatePresence mode="wait">
           <motion.div
