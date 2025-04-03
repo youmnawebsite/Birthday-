@@ -13,20 +13,17 @@ import { Volume2, VolumeX, Home, Heart } from "lucide-react"
 import Link from "next/link"
 
 export default function Journey() {
-  // تعديل الحالة (state) لإضافة وضع المعاينة
   const [currentSection, setCurrentSection] = useState("")
-  const [previewSection, setPreviewSection] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
   const [audioPlaying, setAudioPlaying] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [showHeartTrail, setShowHeartTrail] = useState(false)
   const [hearts, setHearts] = useState<{ id: number; x: number; y: number; size: number; opacity: number }[]>([])
-  const [isPreviewMode, setIsPreviewMode] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const heartCount = useRef(0)
-  const secretClickCount = useRef(0)
-  const secretClickTimer = useRef<NodeJS.Timeout | null>(null)
+  const tooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Calculate progress based on current section
   const calculateProgress = (section: string) => {
@@ -41,18 +38,14 @@ export default function Journey() {
 
     // Initialize audio only on client side
     if (typeof window !== "undefined") {
-      try {
-        audioRef.current = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3") // Background music
-        if (audioRef.current) {
-          audioRef.current.loop = true
-          audioRef.current.volume = 0.3
-        }
-      } catch (error) {
-        console.error("Error initializing audio:", error)
+      audioRef.current = new Audio("/placeholder.mp3") // Replace with actual background music
+      if (audioRef.current) {
+        audioRef.current.loop = true
+        audioRef.current.volume = 0.3
       }
     }
 
-    // Determine which section to show based on current time
+    // تعديل وظيفة تحديد القسم بناءً على الوقت الحالي
     const determineSection = () => {
       const hour = new Date().getHours()
 
@@ -103,104 +96,49 @@ export default function Journey() {
       }
     }
 
-    // إضافة مستمع لضغطات المفاتيح للوصول السري لوضع المعاينة
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // تفعيل وضع المعاينة عند الضغط على Ctrl+Shift+P
-      if (e.ctrlKey && e.shiftKey && e.key === "P") {
-        e.preventDefault()
-        togglePreviewMode()
-      }
-    }
-
     window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("keydown", handleKeyDown)
 
     return () => {
       clearInterval(interval)
       window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("keydown", handleKeyDown)
       if (audioRef.current) {
         audioRef.current.pause()
       }
-      if (secretClickTimer.current) {
-        clearTimeout(secretClickTimer.current)
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current)
       }
     }
   }, [currentSection, showHeartTrail])
 
-  // تعديل وظيفة اختيار القسم لتعمل مع وضع المعاينة
+  // تعديل وظيفة اختيار القسم لتكون غير فعالة
   const selectSection = (section: string) => {
-    if (isPreviewMode) {
-      // في وضع المعاينة، نقوم فقط بتعيين قسم المعاينة دون تغيير القسم الحالي
-      setPreviewSection(section)
-    } else {
-      // في الوضع العادي، نقوم بتغيير القسم الحالي مباشرة
-      setCurrentSection(section)
-      setProgress(calculateProgress(section))
-    }
+    // لا تفعل شيئًا - الأقسام غير قابلة للضغط
+    console.log("الأقسام تظهر حسب الوقت فقط")
   }
 
-  // وظيفة جديدة لتأكيد اختيار القسم بعد المعاينة
-  const confirmSectionSelection = () => {
-    if (previewSection) {
-      setCurrentSection(previewSection)
-      setProgress(calculateProgress(previewSection))
-      setPreviewSection(null)
-      setIsPreviewMode(false)
-    }
-  }
+  // This function is now just a placeholder - sections can't be manually selected
+  const handleSectionClick = () => {
+    setShowTooltip(true)
 
-  // وظيفة جديدة لإلغاء المعاينة والعودة إلى القسم الحالي
-  const cancelPreview = () => {
-    setPreviewSection(null)
-    setIsPreviewMode(false)
-  }
-
-  // وظيفة جديدة لتبديل وضع المعاينة
-  const togglePreviewMode = () => {
-    setIsPreviewMode(!isPreviewMode)
-    if (!isPreviewMode) {
-      // عند تفعيل وضع المعاينة، نعين قسم المعاينة ليكون هو القسم الحالي مبدئيًا
-      setPreviewSection(currentSection)
-    } else {
-      // عند إلغاء وضع المعاينة، نلغي المعاينة
-      setPreviewSection(null)
-    }
-  }
-
-  // وظيفة للنقرات السرية لتفعيل وضع المعاينة
-  const handleSecretClick = () => {
-    secretClickCount.current += 1
-
-    // إعادة ضبط العداد بعد 2 ثانية من عدم النقر
-    if (secretClickTimer.current) {
-      clearTimeout(secretClickTimer.current)
+    // Hide tooltip after 3 seconds
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current)
     }
 
-    secretClickTimer.current = setTimeout(() => {
-      secretClickCount.current = 0
-    }, 2000)
-
-    // تفعيل وضع المعاينة بعد 5 نقرات متتالية
-    if (secretClickCount.current >= 5) {
-      secretClickCount.current = 0
-      togglePreviewMode()
-    }
+    tooltipTimeoutRef.current = setTimeout(() => {
+      setShowTooltip(false)
+    }, 3000)
   }
 
   // Toggle background music
   const toggleAudio = () => {
     if (audioRef.current) {
-      try {
-        if (audioPlaying) {
-          audioRef.current.pause()
-        } else {
-          audioRef.current.play().catch((e) => console.log("Audio play failed:", e))
-        }
-        setAudioPlaying(!audioPlaying)
-      } catch (error) {
-        console.error("Error toggling audio:", error)
+      if (audioPlaying) {
+        audioRef.current.pause()
+      } else {
+        audioRef.current.play().catch((e) => console.log("Audio play failed:", e))
       }
+      setAudioPlaying(!audioPlaying)
     }
   }
 
@@ -219,7 +157,7 @@ export default function Journey() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-blue-50 to-purple-50">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-600 mb-4"></div>
-          <p className="text-teal-700 text-lg">بنحمل الصفحة استنى شوية...</p>
+          <p className="text-teal-700 text-lg">جاري تحميل رحلتك الخاصة...</p>
         </div>
       </div>
     )
@@ -251,10 +189,7 @@ export default function Journey() {
               </Button>
             </Link>
 
-            {/* منطقة النقر السري - تبدو كعنوان عادي */}
-            <div className="text-sm font-medium text-teal-700 cursor-default select-none" onClick={handleSecretClick}>
-              رحلة عيد الميلاد
-            </div>
+            <div className="text-sm font-medium text-teal-700">رحلة عيد الميلاد</div>
 
             <div className="flex space-x-2">
               <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleHeartTrail}>
@@ -272,110 +207,69 @@ export default function Journey() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* أزرار تأكيد أو إلغاء المعاينة - تظهر فقط في وضع المعاينة */}
-        {isPreviewMode && (
-          <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
-            <Button
-              onClick={confirmSectionSelection}
-              size="sm"
-              className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white"
-            >
-              تأكيد
-            </Button>
-            <Button
-              onClick={cancelPreview}
-              size="sm"
-              variant="outline"
-              className="border-red-200 text-red-600 hover:bg-red-50"
-            >
-              إلغاء
-            </Button>
-          </div>
-        )}
-
         {/* Section navigation */}
-        <div
-          className="mb-8 flex flex-wrap justify-center gap-2 bg-white/60 backdrop-blur-sm p-3 rounded-full shadow-sm"
-          dir="rtl"
-        >
-          <motion.button
-            onClick={() => selectSection("morning")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-              (isPreviewMode ? previewSection === "morning" : currentSection === "morning")
-                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
-                : "bg-white/70 text-teal-700 hover:bg-teal-50"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        <div className="relative">
+          {showTooltip && (
+            <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-teal-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50 whitespace-nowrap">
+              الأقسام بتظهر حسب الوقت بس 🕒
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-teal-600"></div>
+            </div>
+          )}
+
+          {/* تعديل أزرار الأقسام لتكون غير قابلة للضغط */}
+          <div
+            className="mb-8 flex flex-wrap justify-center gap-2 bg-white/60 backdrop-blur-sm p-3 rounded-full shadow-sm"
+            dir="rtl"
           >
-            الصبح
-          </motion.button>
-          <motion.button
-            onClick={() => selectSection("noon")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-              (isPreviewMode ? previewSection === "noon" : currentSection === "noon")
-                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
-                : "bg-white/70 text-teal-700 hover:bg-teal-50"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            الضهر
-          </motion.button>
-          <motion.button
-            onClick={() => selectSection("afternoon")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-              (isPreviewMode ? previewSection === "afternoon" : currentSection === "afternoon")
-                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
-                : "bg-white/70 text-teal-700 hover:bg-teal-50"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            العصر
-          </motion.button>
-          <motion.button
-            onClick={() => selectSection("evening")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-              (isPreviewMode ? previewSection === "evening" : currentSection === "evening")
-                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
-                : "bg-white/70 text-teal-700 hover:bg-teal-50"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            المغرب
-          </motion.button>
-          <motion.button
-            onClick={() => selectSection("night")}
-            className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-              (isPreviewMode ? previewSection === "night" : currentSection === "night")
-                ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md"
-                : "bg-white/70 text-teal-700 hover:bg-teal-50"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            الليل
-          </motion.button>
+            <motion.button
+              onClick={() => {}}
+              className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "morning" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-gray-500 cursor-not-allowed"}`}
+            >
+              الصبح
+            </motion.button>
+            <motion.button
+              onClick={() => {}}
+              className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "noon" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-gray-500 cursor-not-allowed"}`}
+            >
+              الظهر
+            </motion.button>
+            <motion.button
+              onClick={() => {}}
+              className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "afternoon" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-gray-500 cursor-not-allowed"}`}
+            >
+              العصر
+            </motion.button>
+            <motion.button
+              onClick={() => {}}
+              className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "evening" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-gray-500 cursor-not-allowed"}`}
+            >
+              المغرب
+            </motion.button>
+            <motion.button
+              onClick={() => {}}
+              className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${currentSection === "night" ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md" : "bg-white/70 text-gray-500 cursor-not-allowed"}`}
+            >
+              الليل
+            </motion.button>
+          </div>
         </div>
 
-        {/* إشارة صغيرة جدًا لوضع المعاينة - تظهر فقط في وضع المعاينة */}
-        {isPreviewMode && <div className="fixed top-4 left-4 w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>}
+        {/* إضافة نص توضيحي أسفل الأزرار */}
+        <div className="text-center text-xs text-gray-500 mb-6">كل قسم بيظهر في وقته المناسب على مدار اليوم 🕒</div>
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={isPreviewMode ? previewSection || currentSection : currentSection}
+            key={currentSection}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            {(isPreviewMode ? previewSection || currentSection : currentSection) === "morning" && <Morning />}
-            {(isPreviewMode ? previewSection || currentSection : currentSection) === "noon" && <Noon />}
-            {(isPreviewMode ? previewSection || currentSection : currentSection) === "afternoon" && <Afternoon />}
-            {(isPreviewMode ? previewSection || currentSection : currentSection) === "evening" && <Evening />}
-            {(isPreviewMode ? previewSection || currentSection : currentSection) === "night" && <Night />}
+            {currentSection === "morning" && <Morning />}
+            {currentSection === "noon" && <Noon />}
+            {currentSection === "afternoon" && <Afternoon />}
+            {currentSection === "evening" && <Evening />}
+            {currentSection === "night" && <Night />}
           </motion.div>
         </AnimatePresence>
       </div>
