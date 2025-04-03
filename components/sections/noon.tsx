@@ -163,8 +163,8 @@ export default function Noon() {
     setFortuneResult(null)
 
     // Animation effect
-    const duration = 3000
-    const interval = 300
+    const duration = 5000
+    const interval = 500
     let count = 0
 
     const fortuneInterval = setInterval(() => {
