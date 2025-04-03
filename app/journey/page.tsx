@@ -56,13 +56,13 @@ export default function Journey() {
     const determineSection = () => {
       const hour = new Date().getHours()
 
-      if (hour >= 5 && hour < 12) {
+      if (hour >= 5 && hour < 13) {
         return "morning"
-      } else if (hour >= 12 && hour < 15) {
+      } else if (hour >= 13 && hour < 16) {
         return "noon"
-      } else if (hour >= 15 && hour < 18) {
+      } else if (hour >= 16 && hour < 19) {
         return "afternoon"
-      } else if (hour >= 18 && hour < 22) {
+      } else if (hour >= 19 && hour < 22) {
         return "evening"
       } else {
         return "night"
@@ -106,7 +106,7 @@ export default function Journey() {
     // إضافة مستمع لضغطات المفاتيح للوصول السري لوضع المعاينة
     const handleKeyDown = (e: KeyboardEvent) => {
       // تفعيل وضع المعاينة عند الضغط على Ctrl+Shift+P
-      if (e.ctrlKey && e.shiftKey && e.key === "P") {
+      if (e.ctrlKey && e.shiftKey && e.key === "M") {
         e.preventDefault()
         togglePreviewMode()
       }
@@ -309,7 +309,7 @@ export default function Journey() {
             whileHover={isPreviewMode ? { scale: 1.05 } : {}}
             whileTap={isPreviewMode ? { scale: 0.95 } : {}}
           >
-            الصباح
+          الصبح
           </motion.button>
           <motion.button
             onClick={() => (isPreviewMode ? selectSection("noon") : null)}
@@ -366,7 +366,7 @@ export default function Journey() {
         </div>
 
         {!isPreviewMode && (
-          <div className="text-center text-xs text-gray-500 mb-4">يتم تحديد القسم تلقائيًا حسب الوقت الحالي</div>
+          <div className="text-center text-xs text-gray-500 mb-4">الوقت بيتغير تلقائي </div>
         )}
 
         {/* إشارة صغيرة جدًا لوضع المعاينة - تظهر فقط في وضع المعاينة */}
