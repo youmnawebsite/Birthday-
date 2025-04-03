@@ -38,7 +38,7 @@ export default function Noon() {
     {
       question: "إيه أكتر حاجه بحبها بتعمليها ",
       options: ["زربنتك ", "دلعك", "غبائك", "قمصك" ,  "عصبيتك"],
-      correctAnswer: "دلعك "// Replace with actual answer
+      correctAnswer: "دلعك"// Replace with actual answer
     }, 
     {
       question: "ايه اكتر حاجه بحبها في شكلك",

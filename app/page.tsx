@@ -66,7 +66,9 @@ export default function Home() {
         </h1>
 
         <p className="text-lg mb-8 text-gray-700 leading-relaxed" style={{ direction: "rtl" }}>
-          النهاردة مش يوم عادي النهاردة يومك وحبيت أعيشه معاكي بطريقتي الخاصة مستعدة؟
+          الأول عذراً عالتأخير اللي حصل اللي كان غصب عننا يعني بس فدايا🌚❤.
+          
+          النهاردة مش يوم عادي النهاردة يومك وحبيت أعيشه معاكي بطريقتي ريدي يحبيبتي؟
         </p>
 
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
@@ -85,7 +87,7 @@ export default function Home() {
         transition={{ delay: 1.5, duration: 1 }}
         className="mt-8 text-sm text-gray-500"
       >
-        دوسي على الزر عشان نبدأ
+        دوسي على الزرار عشان نبدأ
       </motion.div>
     </div>
   )
