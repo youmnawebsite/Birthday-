@@ -34,29 +34,29 @@ export default function Noon() {
 
   const questions = [
     {
-      question: "إيه أكتر حاجة بتعصبني؟",
-      options: ["الزن", "اخويا", "الفوضى", "الأكل البارد"],
-      correctAnswer: "اخويا", // Replace with actual answer
+      question: "اسمي كان هيكون ايه فالاول؟",
+      options: ["خالد", "عبد الرحمن", "منتصر", "معتصم"],
+      correctAnswer: "معتصم", // Replace with actual answer
     },
     {
-      question: "لو طلبت بيتزا، هطلب إيه؟",
-      options: ["رانش", "بيبروني", "سوبريم", "باربكيو"],
-      correctAnswer: "رانش", // Replace with actual answer
+      question: "اول شات كان يوم ايه؟",
+      options: ["الحد", "الخميس", "التلات", "الاتنين"],
+      correctAnswer: "الحد", // Replace with actual answer
     },
     {
-      question: "إيه أكتر حاجه بحبها بتعمليها ",
-      options: ["زربنتك", "دلعك", "غبائك", "قمصك", "عصبيتك"],
-      correctAnswer: "دلعك", // Replace with actual answer
+      question: "أكتر وقت بكون فيه رخم؟",
+      options: ["الصبح", "بالليل", "قبل ما أنام", "بعد ما أكل"],
+      correctAnswer: "قبل ما أنام",
     },
     {
-      question: "ايه اكتر حاجه بحبها في شكلك",
-      options: ["عيونك", "خدودك", "شفايفك", "ضحكتك"],
-      correctAnswer: "ضحكتك", // Replace with actual answer
+      question: "لما أكون جعان موت أول حاجة ببقى عايز آكلها إيه؟",
+      options: ["بيتزا", "مكرونة", "شاورما", "بطاطس"],
+      correctAnswer: "مكرونة",
     },
     {
-      question: "إيه هو لوني المفضل؟",
-      options: ["الأزرق", "الأخضر", "الأسود", "البنفسجي"],
-      correctAnswer: "الأسود", // Replace with actual answer
+      question: "تاني يوم عرفنا بعض فيه بعتتلك اول اليوم عشان ايه",
+      options: ["بسالك عامله ايه", "فيديو عن المسابقه", "بطمنك عشان الجداره ", "مكلمتكيش تاني يوم اصلا"],
+      correctAnswer: "فيديو عن المسابقه", // Replace with actual answer
     },
   ]
 
